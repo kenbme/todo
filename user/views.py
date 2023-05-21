@@ -23,6 +23,7 @@ def login(request: HttpRequest) -> HttpResponse:
             )
             if user is not None:
                 auth.login(request, user)
+                request.session["username"] = user.get_username()
                 response = HttpResponse("Logged")
             else:
                 response = HttpResponse("User not found")
@@ -43,7 +44,7 @@ def register(request: HttpRequest) -> HttpResponse:
             username = form.data.get("username")
             email = form.data.get("email")
             if not user_exists(username, email):
-                new_user = User.objects.create_user(
+                User.objects.create_user(
                     username=username, password=form.data.get("password"), email=email
                 )
                 response = HttpResponse("Registered")
