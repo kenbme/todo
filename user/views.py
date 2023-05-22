@@ -1,5 +1,5 @@
 from django.http import HttpResponse, HttpRequest
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.decorators.http import require_http_methods
 import django.contrib.auth as auth
 from django.contrib.auth.models import User
@@ -23,8 +23,7 @@ def login(request: HttpRequest) -> HttpResponse:
             )
             if user is not None:
                 auth.login(request, user)
-                request.session["username"] = user.get_username()
-                response = HttpResponse("Logged")
+                response = redirect("login")
             else:
                 response = HttpResponse("User not found")
         else:
@@ -53,6 +52,12 @@ def register(request: HttpRequest) -> HttpResponse:
         else:
             response = HttpResponse("Form is invalid")
         return response
+
+
+@require_http_methods(["POST"])
+def logout(request: HttpRequest) -> HttpResponse:
+    auth.logout(request)
+    return redirect("login")
 
 
 def user_exists(username, email):
