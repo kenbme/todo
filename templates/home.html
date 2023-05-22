@@ -1,5 +1,83 @@
 {% extends 'base.html' %}
 
 {% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-10">
+                <nav aria-label="breadcrumb">
+                  <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="">Tasks</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">My tasks</li>
+                  </ol>
+                </nav>
+            </div>
+            <div class="col-md-2 mt-1">
+                <a href="{% url 'add-tasks' %}" class="btn btn-primary"> Add Task</a>
+            </div>
+        </div>
+        <div class="container">
+        <div class="app-table">
+            <table class="table table-striped table-hover">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Description</th>
+                    <th>Date</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for tsk in page_obj %}
+                <tr>
+                    <td>{{ tsk.name }}</td>
+                    <td>{{ tsk.category }}</td>
+                    <td>{{ tsk.description }}</td>
+                    <td>{{ tsk.date }}</td>
+                    <td><a href="{% url 'task-edit' tsk.id %}" class="btn btn-outline-primary">Edit</a></td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="table-output">
+            <table class="table table-striped table-hover">
+                <thead>
+                <tr>
+                    <th>Name </th>
+                    <th>Category</th>
+                    <th>Description</th>
+                    <th>Date</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody class="table-body">
 
-{% endblock %}
+                </tbody>
+            </table>
+        </div>
+    <div class="pagination-container">
+    {% if page_obj.number > 0 %}
+    <div class="">
+      Showing page {{page_obj.number}} of {{ page_obj.paginator.num_pages }}
+    </div>
+        <ul class="pagination align-right float-right mr-auto">
+          {% if page_obj.has_previous %}
+              <li {% if page_obj.number == 1 %} class="page-item active" {% endif %}><a class="page-link" href="?page=1">&laquo; 1</a></li>
+              <li class="page-item"> <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
+          {% endif %}
+
+          {% if page_obj.has_next %}
+              <li class="page-item"> <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
+              <li class="page-item"> <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages}} &raquo;</a></li>
+          {% endif %}
+        </ul>
+    {% else %}
+        <div class="">
+            There is no Tasks yet
+        </div>
+    {% endif %}
+    </div>
+    </div>
+    </div>
+{% endblock content %}
