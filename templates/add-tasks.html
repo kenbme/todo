@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container"></div>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}">Tasks</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Add Tasks</li>
+      </ol>
+    </nav>
+    <div class="card">
+        <form action="{% url 'add-tasks' %}" method="post">
+            {% csrf_token %}
+            <div class="card-body">
+                <div class="form-group">
+                    <label FOR="">Name</label>
+                    <input type="text" class="form-control form-control-sm" value="{{ values.name }}" name="name">
+                </div>
+                <div class="form-group">
+                    <label FOR="">Description</label>
+                    <input type="text" class="form-control form-control-sm" name="description" value="{{ values.description }}">
+                </div>
+                <div class="form-group">
+                    <label FOR="">Category</label>
+                    <select name="category" class="form-control">
+                        {% for category in categories %}
+                            <option name="{{ category }}">{{ category }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label FOR="">Date of the task</label>
+                    <input type="date" class="form-control form-control-sm" name="task_date">
+                </div>
+                <input type="submit" value="Submit" class="btn btn-primary btn-outline-primary">
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
