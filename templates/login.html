@@ -4,8 +4,7 @@
 
 <form action={% url 'login' %} method="post">
     {% csrf_token %}
-    <input placeholder="Username" type="text" name="username" id="username">
-    <input placeholder="Password" type="password" name="password" id="password">
+    {{form}}
     <input type="submit" value="Login">
 </form>
 

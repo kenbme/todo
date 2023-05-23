@@ -2,18 +2,17 @@ from django.http import HttpResponse, HttpRequest
 from django.shortcuts import render, redirect
 from django.views.decorators.http import require_http_methods
 import django.contrib.auth as auth
-from django.contrib.auth.models import User
 from .forms import LoginForm, RegisterForm
 
 
-# Create your views here.
 @require_http_methods(["GET", "POST"])
 def login(request: HttpRequest) -> HttpResponse:
-    if request.method == "GET":
-        return render(request, "login.html")
+    form: LoginForm
 
-    elif request.method == "POST":
-        response: HttpResponse
+    if request.method == "GET":
+        form = LoginForm()
+
+    else:  # POST
         form = LoginForm(request.POST)
         if form.is_valid():
             user = auth.authenticate(
@@ -23,45 +22,30 @@ def login(request: HttpRequest) -> HttpResponse:
             )
             if user is not None:
                 auth.login(request, user)
-                response = redirect("login")
+                return redirect("home")
             else:
-                response = HttpResponse("User not found")
-        else:
-            response = HttpResponse("Form is invalid")
-        return response
+                form.add_error(None, "User not found.")
+
+    return render(request, "login.html", {"form": form})
 
 
 @require_http_methods(["GET", "POST"])
 def register(request: HttpRequest) -> HttpResponse:
-    if request.method == "GET":
-        return render(request, "register.html")
+    form: RegisterForm
 
-    elif request.method == "POST":
-        response: HttpResponse
+    if request.method == "GET":
+        form = RegisterForm()
+
+    else:  # POST
         form = RegisterForm(request.POST)
         if form.is_valid():
-            username = form.data.get("username")
-            email = form.data.get("email")
-            if not user_exists(username, email):
-                User.objects.create_user(
-                    username=username, password=form.data.get("password"), email=email
-                )
-                response = HttpResponse("Registered")
-            else:
-                response = HttpResponse("Username or Email already registered")
-        else:
-            response = HttpResponse("Form is invalid")
-        return response
+            form.save()
+            return redirect("login")
+
+    return render(request, "register.html", {"form": form})
 
 
 @require_http_methods(["POST"])
 def logout(request: HttpRequest) -> HttpResponse:
     auth.logout(request)
     return redirect("login")
-
-
-def user_exists(username, email):
-    return (
-        User.objects.filter(username=username).exists()
-        or User.objects.filter(email=email).exists()
-    )
