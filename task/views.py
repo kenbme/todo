@@ -35,17 +35,17 @@ def add_tasks(request):
         return render(request, 'add-tasks.html', context)
 
     if request.method == 'POST':
-        task = request.POST['name']
+        name = request.POST['name']
         description = request.POST['description']
         if request.POST['task_date'] != "":
             date = request.POST['task_date']
         else:
             date = now()
         category = request.POST['category']
-        if not task:
+        if not name:
             messages.error(request, 'Task is required')
 
-        Task.objects.create(owner=request.user, task=task, date=date, description=description, category=category)
+        Task.objects.create(owner=request.user, name=name, date=date, description=description, category=category)
 
         return redirect('home')
 
@@ -54,7 +54,7 @@ def task_edit(request, id):
     categories = Category.objects.all()
     task = Task.objects.get(pk=id)
     context = {
-        'expense': task,
+        'task': task,
         'values': task,
         'categories': categories
     }
@@ -83,6 +83,12 @@ def task_edit(request, id):
         task.save()
 
         return redirect('home')
+    
+
+def delete_tasks(request, id):
+    task = Task.objects.get(pk=id)
+    task.delete()
+    return redirect('home')
 
 
 def about(request):
