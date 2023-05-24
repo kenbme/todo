@@ -11,7 +11,7 @@ from .forms import TaskForm
 @require_http_methods(["GET"])
 def home(request: HttpRequest) -> HttpResponse:
     task = Task.objects.filter(owner=request.user)
-    paginator = Paginator(task, 4)
+    paginator = Paginator(task, 2)
     page_number = request.GET.get("page")
     page_obj = Paginator.get_page(paginator, page_number)
     context = {
