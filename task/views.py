@@ -42,7 +42,7 @@ def edit_task(request: HttpRequest, pk) -> HttpResponse:
     instance = get_object_or_404(Task, pk=pk)
 
     if request.method == "GET":
-        form = TaskForm()
+        form = TaskForm(instance=instance)
 
     else:  # POST
         form = TaskForm(request.POST, instance=instance)
