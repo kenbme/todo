@@ -6,13 +6,13 @@
             <div class="col-md-10">
                 <nav aria-label="breadcrumb">
                   <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="">Tasks</a></li>
+                    <li class="breadcrumb-item"><a href={% url 'home' %}>Tasks</a></li>
                     <li class="breadcrumb-item active" aria-current="page">My tasks</li>
                   </ol>
                 </nav>
             </div>
             <div class="col-md-2 mt-1">
-                <a href="{% url 'add-task' %}" class="btn btn-primary"> Add Task</a>
+                <a href="{% url 'add-task' %}" class="btn btn-primary">Add Task</a>
             </div>
         </div>
         <div class="container">
