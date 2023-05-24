@@ -5,14 +5,14 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{% url 'home' %}">Tasks</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Add Tasks</li>
+        <li class="breadcrumb-item active" aria-current="page">Add Task</li>
     </ol>
 </nav>
 <div class="card">
     <form action="{% url 'add-task' %}" method="post">
         {% csrf_token %}
         {{ form }}
-        <input type="submit" value="Submit" class="btn btn-primary btn-outline-primary">
+        <input type="submit" value="Create" class="btn btn-primary btn-outline-primary">
     </form>
 </div>
 </div>

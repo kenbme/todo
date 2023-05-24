@@ -1,20 +1,18 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <div class="text-center">
-      <h1>Sobre Nós</h1>
-    </div>
-
-    <div class="d-flex justify-content-center text-center mt-5">
-      <div>
-          <div>IMG</div>
-        <h2>Kenned Barbosa</h2>
-        <p class="mx-5" style=" width: 300px">Sobre kenned</p>
-      </div>
-      <div>
-          <div>IMG</div>
-        <h2>Geraldo Sobreira</h2>
-        <p class="mx-5" style=" width: 200px">Programador Full-Stack, Stacks: React.js, TailwindCSS, Bootstrap,  Django, Laravel</p>
-      </div>
-    </div>
+<div class="grid grid-cols-2 gap-4">
+  <div class="flex flex-column items-center p-10">
+    <div><img src="https://avatars.githubusercontent.com/u/99031023?v=4" /></div>
+    <h2>Kenned Barbosa</h2>
+    <p class="mx-5"><a href="https://github.com/kenbme">@kenbme</a></p>
+  </div>
+  <div class="flex flex-column items-center p-10">
+    <div><img src="https://avatars.githubusercontent.com/u/64179572?v=4" /></div>
+    <h2>Geraldo Sobreira</h2>
+    <p class="mx-5"><a href="https://github.com/Geraldo157">@Geraldo157</a></p>
+    <p class="mx-5">Programador Full-Stack, Stacks: React.js, TailwindCSS, Bootstrap, Django,
+      Laravel</p>
+  </div>
+</div>
 {% endblock %}
