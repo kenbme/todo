@@ -1,15 +1,15 @@
+from django.http import HttpResponse, HttpRequest
 from django.views.decorators.http import require_http_methods
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-from django.utils.timezone import now
 from django.core.paginator import Paginator
-from .models import Task, Category
+from .models import Task
+from .forms import TaskForm
 
 
 @login_required(login_url="user/login/")
 @require_http_methods(["GET"])
-def home(request):
+def home(request: HttpRequest) -> HttpResponse:
     task = Task.objects.filter(owner=request.user)
     paginator = Paginator(task, 4)
     page_number = request.GET.get("page")
@@ -22,74 +22,44 @@ def home(request):
 
 
 @require_http_methods(["GET", "POST"])
-def add_tasks(request):
-    categories = Category.objects.all()
-    context = {"categories": categories, "values": request.POST}
-
+def add_task(request: HttpRequest) -> HttpResponse:
     if request.method == "GET":
-        return render(request, "add-tasks.html", context)
+        form = TaskForm()
 
-    if request.method == "POST":
-        name = request.POST["name"]
-        description = request.POST["description"]
-        if request.POST["task_date"] != "":
-            date = request.POST["task_date"]
-        else:
-            date = now()
-        category = request.POST["category"]
-        if not name:
-            messages.error(request, "Task is required")
+    else:  # POST
+        form = TaskForm(request.POST)
+        if form.is_valid():
+            task = form.save(commit=False)
+            task.user = request.user
+            task.save()
+            return redirect("home")
 
-        Task.objects.create(
-            owner=request.user,
-            name=name,
-            date=date,
-            description=description,
-            category=category,
-        )
-
-        return redirect("home")
+    return render(request, "add-task.html", {"form": form})
 
 
 @require_http_methods(["GET", "POST"])
-def task_edit(request, id):
-    categories = Category.objects.all()
-    task = Task.objects.get(pk=id)
-    context = {"task": task, "values": task, "categories": categories}
+def edit_task(request: HttpRequest, pk) -> HttpResponse:
+    instance = get_object_or_404(Task, pk=pk)
+
     if request.method == "GET":
-        messages.info(request, "Handling post form")
-        return render(request, "edit_task.html", context)
+        form = TaskForm()
 
-    if request.method == "POST":
-        amount = request.POST["amount"]
+    else:  # POST
+        form = TaskForm(request.POST, instance=instance)
+        if form.is_valid():
+            form.save()
+            return redirect("home")
 
-        description = request.POST["description"]
-        if request.POST["expense_date"] != "":
-            date = request.POST["expense_date"]
-        else:
-            date = now()
-        category = request.POST["category"]
-        if not amount:
-            messages.error(request, "Amount is required")
-
-        task.owner = request.user
-        task.amount = amount
-        task.date = date
-        task.description = description
-        task.category = category
-
-        task.save()
-
-        return redirect("home")
+    return render(request, "edit_task.html", {"form": form, "pk": pk})
 
 
-@require_http_methods(["DELETE"])
-def delete_task(id):
-    task = Task.objects.get(pk=id)
-    task.delete()
+@require_http_methods(["GET"])
+def delete_task(request: HttpRequest, pk) -> HttpResponse:
+    instance = get_object_or_404(Task, pk=pk)
+    instance.delete()
     return redirect("home")
 
 
 @require_http_methods(["GET"])
-def about(request):
+def about(request: HttpRequest) -> HttpResponse:
     return render(request, "about.html")

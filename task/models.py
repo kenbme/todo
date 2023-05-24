@@ -6,8 +6,8 @@ class Task(models.Model):
     owner = models.ForeignKey(to=User, on_delete=models.CASCADE)
     name = models.CharField(max_length=50, default="Unnamed Task")
     category = models.CharField(max_length=50)
-    description = models.CharField(max_length=200)
     date = models.DateField()
+    description = models.CharField(max_length=200)
 
 
 class Category(models.Model):
