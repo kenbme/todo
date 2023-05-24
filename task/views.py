@@ -30,7 +30,7 @@ def add_task(request: HttpRequest) -> HttpResponse:
         form = TaskForm(request.POST)
         if form.is_valid():
             task = form.save(commit=False)
-            task.user = request.user
+            task.owner = request.user
             task.save()
             return redirect("home")
 
